@@ -1,41 +1,55 @@
-const powButton  = document.querySelector(".pow");
-const modButton  = document.querySelector(".mod");
-const sqrtButton = document.querySelector(".sqrt");
-const factButton = document.querySelector(".fact");
-
-const zeroButton  = document.querySelector(".zero");
-const oneButton   = document.querySelector(".one");
-const twoButton   = document.querySelector(".two");
-const threeButton = document.querySelector(".three");
-const fourButton  = document.querySelector(".four");
-const fiveButton  = document.querySelector(".five");
-const sixButton   = document.querySelector(".six");
-const sevenButton = document.querySelector(".seven");
-const eightButton = document.querySelector(".eight");
-const nineButton  = document.querySelector(".nine");
-
-const multiplyButton = document.querySelector(".x");
-const addButton      = document.querySelector(".plus");
-const subtractButton = document.querySelector(".subtract");
-const divideButton   = document.querySelector(".divide");
-const equalButton    = document.querySelector(".equal");
-
-const openButton      = document.querySelector(".open");
-const closeButton     = document.querySelector(".close");
-const decimalPtButton = document.querySelector(".dec-point");
-
-const deleteButton = document.querySelector(".del");
-const clearButton  = document.querySelector(".C");
-
 const output = document.querySelector(".output");
 
-const MAX_NUM = "999999999999999";
-const MIN_NUM = "-99999999999999";
-let operand1  = 42069;
-let operand2  = 0;
-let operator  = "+";
+const MAX_NUM     = "999999999999999";
+const MIN_NUM     = "-99999999999999";
+let operand1      = "";
+let operand2      = "";
+let activeOperand = operand1;
+let operator      = "+";
 
-calculate(operand1, operand2, operator);
+display(0);
+
+const body = document.querySelector(".body");
+body.addEventListener("click", function(event) {
+    let button;
+    if (event.target.tagName === "BUTTON") {
+        button = event.target.className;
+    }
+    switch (button) {
+        case "zero":
+            activeOperand += "0";
+            break;
+        case "one":
+            activeOperand += "1";
+            break;
+        case "two":
+            activeOperand += "2";
+            break;
+        case "three":
+            activeOperand += "3";
+            break;
+        case "four":
+            activeOperand += "4";
+            break;
+        case "five":
+            activeOperand += "5";
+            break;
+        case "six":
+            activeOperand += "6";
+            break;
+        case "seven":
+            activeOperand += "7";
+            break;
+        case "eight":
+            activeOperand += "8";
+            break;
+        case "nine":
+            activeOperand += "9";
+            break;
+        default:
+            break;
+    }
+});
 
 function calculate(op1, op2, oper) {
     let ans;
