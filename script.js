@@ -2,62 +2,131 @@ const output = document.querySelector(".output");
 
 const MAX_NUM     = "999999999999999";
 const MIN_NUM     = "-99999999999999";
-let operand1      = "";
-let operand2      = "";
-let activeOperand = operand1;
-let operator      = "+";
+let operand1      = 0;
+let operand2      = 0;
+let activeOperand = "";
+let operator      = "";
 
 display(0);
 
 const body = document.querySelector(".body");
 body.addEventListener("click", function(event) {
+    if (output.textContent.includes("ERROR")) 
+        clear();
+    
     let button;
     if (event.target.tagName === "BUTTON") {
         button = event.target.className;
     }
     switch (button) {
-        case "zero":
-            activeOperand += "0";
+        // numerical values
+        case "zero0":
+        case "one1":
+        case "two2":
+        case "three3":
+        case "four4":
+        case "five5":
+        case "six6":
+        case "seven7":
+        case "eight8":
+        case "nine9":
+            if (activeOperand.length < MAX_NUM.length) {
+                activeOperand += button.slice(-1);
+                display(activeOperand);
+            }
             break;
-        case "one":
-            activeOperand += "1";
+
+        // arithmetic operations
+        case "x":
+        case "divide":
+        case "plus":
+        case "subtract":
+        case "modulo":
+        case "power":
+            handleOperator(button);
             break;
-        case "two":
-            activeOperand += "2";
+
+        case "equal":
+            operand2 = +activeOperand;
+            let result = calculate(operand1, operand2, operator);
+            display(result);
+            operand1 = result;
+            activeOperand = "";
+            operator = "";
             break;
-        case "three":
-            activeOperand += "3";
+
+        case "C":
+            clear();
             break;
-        case "four":
-            activeOperand += "4";
+        case "del":
+            activeOperand = activeOperand.slice(0, -1);
+            display(activeOperand);
             break;
-        case "five":
-            activeOperand += "5";
+
+        case "dec-point":
+            if (! activeOperand.includes('.') && activeOperand.length < MAX_NUM.length) {
+                activeOperand += ".";
+                display(activeOperand);
+            }
             break;
-        case "six":
-            activeOperand += "6";
-            break;
-        case "seven":
-            activeOperand += "7";
-            break;
-        case "eight":
-            activeOperand += "8";
-            break;
-        case "nine":
-            activeOperand += "9";
-            break;
+
         default:
             break;
     }
 });
 
+function handleOperator(op) {
+    if (activeOperand !== "") {
+        if (operator !== "") {
+            operand2 = +activeOperand;
+            operand1 = calculate(operand1, operand2, operator);
+            display(operand1);
+        } 
+        else {
+            operand1 = +activeOperand;
+        }
+    }
+    activeOperand = "";
+    if (op === "plus")
+        operator = "+";
+    else if (op === "x") 
+        operator = "*";
+    else if (op === "divide") 
+        operator = "/";
+    else if (op === "modulo") 
+        operator = "%";
+    else if (op === "power") 
+        operator = "^";
+    else
+        operator = "-";
+}
+
 function calculate(op1, op2, oper) {
     let ans;
-    if (oper === "+")      ans = add(op1, op2);
-    else if (oper === "-") ans = subtract(op1, op2);
-    else if (oper === "x") ans = multiply(op1, op2);
-    else if (oper === "/") ans = divide(op1, op2);
-    display(ans);
+    switch (oper) {
+        case "+":
+            ans = add(op1, op2);
+            break;
+        case "-":
+            ans = subtract(op1, op2);
+            break;
+        case "*":
+            ans = multiply(op1, op2);
+            break;
+        case "/":
+            ans = divide(op1, op2);
+            break;
+        case "%":
+            ans = modulus(op1, op2);
+            break;
+        case "^":
+            ans = power(op1, op2);
+            break;
+        default:
+            ans = op2;
+            break;
+    }
+    return ans;
 }
 
 function add(op1, op2) {
@@ -76,11 +145,19 @@ function divide(op1, op2) {
     return (op2 == 0) ? "MATH ERROR" : op1 / op2;
 }
 
+function modulus(op1, op2) {
+    return (op2 == 0) ? "MATH ERROR" : op1 % op2;
+}
+
+function power(op1, op2) {
+    return op1 ** op2;
+}
+
 function display(operand) {
     let strOperand = operand.toString();
     if (operand === "MATH ERROR" || strOperand.length <= MAX_NUM.length && strOperand.length <= MIN_NUM.length) {
         output.textContent = operand;
-        return;
+        return operand;
     }
 
     // if decimal part is too huge, remove digits from the right side
@@ -90,9 +167,17 @@ function display(operand) {
         }
         
         output.textContent = parseFloat(strOperand);
-        return;
+        return parseFloat(strOperand);
     }
 
     // number is too big to be displayed
     output.textContent = "ERROR: Overflow";
+}
+
+function clear() {
+    operand1      = 0;
+    operand2      = 0;
+    activeOperand = "";
+    operator      = "";
+    display(0);
 }
